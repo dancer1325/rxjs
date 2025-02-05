@@ -1,32 +1,47 @@
 # RxJS: Glossary And Semantics
 
-When discussing and documenting observables, it's important to have a common language and a known set of rules around what is going on. This document is an attempt to standardize these things so we can try to control the language in our docs, and hopefully other publications about RxJS, so we can discuss reactive programming with RxJS on consistent terms.
-
-While not all of the documentation for RxJS reflects this terminology, it is a goal of the team to ensure it does, and to ensure the language and names around the library use this document as a source of truth and unified language.
-
 ## Major Entities
 
-There are high level entities that are frequently discussed. It's important to define them separately from other lower-level concepts, because they relate to the nature of observable.
+* == high level entities
 
 ### Consumer
 
-The code that is subscribing to the observable. This is whoever is being _notified_ of [nexted](#next) values, and [errors](#error) or [completions](#complete).
+* == code / subscribes to the observable
+  * == -- is notified of --
+    * [nexted](#next) values,
+    * [errors](#error) or
+    * [completions](#complete)
 
 ### Producer
 
-Any system or thing that is the source of values that are being pushed out of the observable subscription to the consumer. This can be a wide variety of things, from a `WebSocket` to a simple iteration over an `Array`. The producer is most often created during the [subscribe](#subscribe) action, and therefor "owned" by a [subscription](#subscription) in a 1:1 way, but that is not always the case. A producer may be shared between many subscriptions, if it is created outside of the [subscribe](#subscribe) action, in which case it is one-to-many, resulting in a [multicast](#multicast).
+* == system or thing / source of values -- are pushed -- out of the observable subscription == to the consumer
+* _Example:_ `WebSocket`, simple iteration | `Array`
+* | [subscribe](#subscribe) action,
+  * MOST often created
+    * -> -- "owned" by a -- [subscription](#subscription) / 1:1 way
+* uses
+  * shared BETWEEN MANY subscriptions,
+  * if it is created outside of the [subscribe](#subscribe) action -> one-to-many == [multicast](#multicast)
 
 ### Subscription
 
-A contract where a [consumer](#consumer) is [observing](#observation) values pushed by a [producer](#producer). The subscription (not to be confused with the `Subscription` class or type), is an ongoing process that amounts to the function of the observable from the Consumer's perspective. Subscription starts the moment a [subscribe](#subscribe) action is initiated, even before the [subscribe](#subscribe) action is finished.
+* == contract / [consumer](#consumer) -- is [observing](#observation) values pushed by a -- [producer](#producer)
+* != `Subscription` class or type
+* 's lifetime == [[subscribe](#subscribe) action is initiated, BEFORE the [subscribe](#subscribe) action is finished]
 
 ### Observable
 
-The primary type in RxJS. At its highest level, an observable represents a template for connecting an [Observer](#observer), as a [consumer](#consumer), to a [producer](#producer), via a [subscribe](#subscribe) action, resulting in a [subscription](#subscription).
+* | RxJS,
+  * primary type
+* == template /
+  * [Observer](#observer) (_Example:_ [consumer](#consumer)) -- can connect, via a [subscribe](#subscribe) action, to a -- [producer](#producer)
 
 ### Observer
 
-The manifestation of a [consumer](#consumer). A type that may have some (or all) handlers for each type of [notification](#notification): [next](#next), [error](#error), and [complete](#complete). Having all three types of handlers generally gets this to be called an "observer", where if it is missing any of the notification handlers, it may be called a ["partial observer"](#partial-observer).
+* == [consumer](#consumer)'s manifestation
+* == type /
+  * may have SOME or ALL handlers / EACH type of [notification](#notification)
+* != ["partial observer"](#partial-observer)
 
 ## Major Actions
 
@@ -34,7 +49,17 @@ There are specific actions and events that occur between major entities in RxJS 
 
 ### Subscribe
 
-The act of a [consumer](#consumer) requesting from an Observable to set up a [subscription](#subscription) so that it may [observe](#observation) a [producer](#producer). A subscribe action can occur with an observable via many different mechanisms. The primary mechanism is the [`subscribe` method](/api/index/class/Observable#subscribe) on the [Observable class](/api/index/class/Observable). Other mechanisms include the [`forEach` method](/api/index/class/Observable#forEach), functions like [`lastValueFrom`](/api/index/function/lastValueFrom), and [`firstValueFrom`](/api/index/function/firstValueFrom), and the deprecated [`toPromise` method](/api/index/class/Observable#forEach).
+* == [consumer's act](#consumer) / set up a [subscription](#subscription)
+  * request from an Observable
+  * == [observe](#observation) a [producer](#producer)
+* ALLOWED mechanisms
+  * [`Observable.subscribe` method](/api/index/class/Observable#subscribe)
+    * MAIN one
+  * [`forEach` method](/api/index/class/Observable#forEach),
+  * functions
+    * [`lastValueFrom`](/api/index/function/lastValueFrom),
+    * [`firstValueFrom`](/api/index/function/firstValueFrom),
+    * deprecated [`toPromise` method](/api/index/class/Observable#forEach)
 
 ### Finalization
 
@@ -66,7 +91,12 @@ The [producer](#producer) is notifying the [consumer](#consumer) that it is done
 
 ### Notification
 
-The act of a [producer](#producer) pushing [nexted](#next) values, [errors](#error) or [completions](#complete) to a [consumer](#consumer) to be [observed](#observation). Not to be confused with the [`Notification` type](/api/index/class/Notification), which is notification manifested as a JavaScript object.
+* == act / [producer](#producer) pushes -- to a -- [consumer](#consumer)
+  * [nexted](#next) values,
+  * [errors](#error) or
+  * [completions](#complete)
+* != [`Notification` type](/api/index/class/Notification)
+  * == notification -- manifested as a -- JavaScript object
 
 ## Major Concepts
 
@@ -132,7 +162,7 @@ One, of possibly many [sources](#source), which are [subscribed](#subscribe) to 
 
 ### Partial Observer
 
-An [observer](#observer) that lacks all necessary [notification](#notification) handlers. Generally these are supplied by user-land [consumer](#consumer) code. A "full observer" or "observer" would simply be an observer that has all [notification](#notification) handlers.
+* == [observer](#observer) / lacks ALL NECESSARY [notification](#notification) handlers
 
 ## Other Concepts
 
