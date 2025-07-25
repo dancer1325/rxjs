@@ -22,7 +22,7 @@
   * RxJS +
   * related packages
 * [/apps](/apps/)
-  * [rxjs.dev](https://rxjs.dev) documentation site
+  * 💡[rxjs.dev](https://rxjs.dev) documentation site💡
 
 ## Versions In This Repository
 

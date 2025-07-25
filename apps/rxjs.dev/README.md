@@ -1,9 +1,11 @@
 # RxJS documentation project
 
-Everything in this folder is part of the documentation project. This includes
+* == 👀documentation's web site + dgeni configuration👀
+  * dgeni configuration
+    * convert source files -- to -- rendered files / can be viewed | web site
 
-- the web site for displaying the documentation
-- the dgeni configuration for converting source files to rendered files that can be viewed in the web site.
+## Documentation
+* [here](content/index.md)
 
 ## Developer tasks
 
