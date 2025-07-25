@@ -1,79 +1,26 @@
 # Observable
 
-Observables are lazy Push collections of multiple values. They fill the missing spot in the following table:
+* Observables
+  * == ⭐️lazy Push collections / MULTIPLE values⭐️
+  * ⚠️if you want to invoke the Observable & see these values -> subscribe | it⚠️
 
 |          | Single                                                                                                | Multiple                                                                                            |
 | -------- | ----------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
 | **Pull** | [`Function`](https://developer.mozilla.org/en-US/docs/Glossary/Function)                              | [`Iterator`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols) |
 | **Push** | [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) | [`Observable`](/api/index/class/Observable)                                                         |
 
-**Example.** The following is an Observable that pushes the values `1`, `2`, `3` immediately (synchronously) when subscribed, and the value `4` after one second has passed since the subscribe call, then completes:
-
-```ts
-import { Observable } from 'rxjs';
-
-const observable = new Observable((subscriber) => {
-  subscriber.next(1);
-  subscriber.next(2);
-  subscriber.next(3);
-  setTimeout(() => {
-    subscriber.next(4);
-    subscriber.complete();
-  }, 1000);
-});
-```
-
-To invoke the Observable and see these values, we need to _subscribe_ to it:
-
-```ts
-import { Observable } from 'rxjs';
-
-const observable = new Observable((subscriber) => {
-  subscriber.next(1);
-  subscriber.next(2);
-  subscriber.next(3);
-  setTimeout(() => {
-    subscriber.next(4);
-    subscriber.complete();
-  }, 1000);
-});
-
-console.log('just before subscribe');
-observable.subscribe({
-  next(x) {
-    console.log('got value ' + x);
-  },
-  error(err) {
-    console.error('something wrong occurred: ' + err);
-  },
-  complete() {
-    console.log('done');
-  },
-});
-console.log('just after subscribe');
-```
-
-Which executes as such on the console:
-
-```none
-just before subscribe
-got value 1
-got value 2
-got value 3
-just after subscribe
-got value 4
-done
-```
-
-## Pull versus Push
+## Pull vs Push
 
 _Pull_ and _Push_ are two different protocols that describe how a data _Producer_ can communicate with a data _Consumer_.
 
-**What is Pull?** In Pull systems, the Consumer determines when it receives data from the data Producer. The Producer itself is unaware of when the data will be delivered to the Consumer.
+**What is Pull?** In Pull systems, the Consumer determines when it receives data from the data Producer
+* The Producer itself is unaware of when the data will be delivered to the Consumer.
 
-Every JavaScript Function is a Pull system. The function is a Producer of data, and the code that calls the function is consuming it by "pulling" out a _single_ return value from its call.
+Every JavaScript Function is a Pull system
+* The function is a Producer of data, and the code that calls the function is consuming it by "pulling" out a _single_ return value from its call.
 
-ES2015 introduced [generator functions and iterators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*) (`function*`), another type of Pull system. Code that calls `iterator.next()` is the Consumer, "pulling" out _multiple_ values from the iterator (the Producer).
+ES2015 introduced [generator functions and iterators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*) (`function*`), another type of Pull system
+* Code that calls `iterator.next()` is the Consumer, "pulling" out _multiple_ values from the iterator (the Producer).
 
 |          | Producer                                   | Consumer                                    |
 | -------- | ------------------------------------------ | ------------------------------------------- |
