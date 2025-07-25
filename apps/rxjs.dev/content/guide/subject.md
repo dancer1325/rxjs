@@ -1,38 +1,35 @@
 # Subject
 
-**What is a Subject?** An RxJS Subject is a special type of Observable that allows values to be multicasted to many Observers. While plain Observables are unicast (each subscribed Observer owns an independent execution of the Observable), Subjects are multicast.
+* RxJS Subject
+  * := ⭐️special type of Observable + Observer⭐️
+    * special type of Observable
+      * allows
+        * 👀values are multicasted -- to -- MANY Observers👀
+      * uses
+        * `subscribe` | it
+          * -- by -- providing an Observer
+            * ⚠️Observer can NOT differentiate unicast Observable vs Subject⚠️
+          * Reason:🧠Subject == Observable🧠
+      * vs plain Observables
+        * multicast vs unicast
+      * 👀maintain a registry of MANY listeners👀
+        * == EventEmitters
+    * Observer
+      * == object / has methods `next(v)` + `error(e)` + `complete()`
+        * `next(value)`
+          * 👀feed a NEW value | Subject👀
+          * value is multicasted -- to the -- Observers / registered to listen the Subject
 
-<span class="informal">A Subject is like an Observable, but can multicast to many Observers. Subjects are like EventEmitters: they maintain a registry of many listeners.</span>
+* unicast
+  * == INDEPENDENT execution of the Observable / EACH subscribed Observer
 
-**Every Subject is an Observable.** Given a Subject, you can `subscribe` to it, providing an Observer, which will start receiving values normally. From the perspective of the Observer, it cannot tell whether the Observable execution is coming from a plain unicast Observable or a Subject.
+* multicast
+  * ❌NOT NEW execution  of the Observable / EACH subscribed Observer❌
+  * registers the given Observer | list of Observers
+    * == SAME execution / ALL observers
+    * == OTHER libraries & languages' `addListener`
 
-Internally to the Subject, `subscribe` does not invoke a new execution that delivers values. It simply registers the given Observer in a list of Observers, similarly to how `addListener` usually works in other libraries and languages.
 
-**Every Subject is an Observer.** It is an object with the methods `next(v)`, `error(e)`, and `complete()`. To feed a new value to the Subject, just call `next(theValue)`, and it will be multicasted to the Observers registered to listen to the Subject.
-
-In the example below, we have two Observers attached to a Subject, and we feed some values to the Subject:
-
-```ts
-import { Subject } from 'rxjs';
-
-const subject = new Subject<number>();
-
-subject.subscribe({
-  next: (v) => console.log(`observerA: ${v}`),
-});
-subject.subscribe({
-  next: (v) => console.log(`observerB: ${v}`),
-});
-
-subject.next(1);
-subject.next(2);
-
-// Logs:
-// observerA: 1
-// observerB: 1
-// observerA: 2
-// observerB: 2
-```
 
 Since a Subject is an Observer, this also means you may provide a Subject as the argument to the `subscribe` of any Observable, like the example below shows:
 
@@ -61,7 +58,8 @@ observable.subscribe(subject); // You can subscribe providing a Subject
 // observerB: 3
 ```
 
-With the approach above, we essentially just converted a unicast Observable execution to multicast, through the Subject. This demonstrates how Subjects are the only way of making any Observable execution be shared to multiple Observers.
+With the approach above, we essentially just converted a unicast Observable execution to multicast, through the Subject
+* This demonstrates how Subjects are the only way of making any Observable execution be shared to multiple Observers.
 
 There are also a few specializations of the `Subject` type: `BehaviorSubject`, `ReplaySubject`, and `AsyncSubject`.
 
@@ -71,7 +69,8 @@ A "multicasted Observable" passes notifications through a Subject which may have
 
 <span class="informal">A multicasted Observable uses a Subject under the hood to make multiple Observers see the same Observable execution.</span>
 
-Under the hood, this is how the `multicast` operator works: Observers subscribe to an underlying Subject, and the Subject subscribes to the source Observable. The following example is similar to the previous example which used `observable.subscribe(subject)`:
+Under the hood, this is how the `multicast` operator works: Observers subscribe to an underlying Subject, and the Subject subscribes to the source Observable
+* The following example is similar to the previous example which used `observable.subscribe(subject)`:
 
 ```ts
 import { from, Subject, multicast } from 'rxjs';
@@ -92,9 +91,11 @@ multicasted.subscribe({
 multicasted.connect();
 ```
 
-`multicast` returns an Observable that looks like a normal Observable, but works like a Subject when it comes to subscribing. `multicast` returns a `ConnectableObservable`, which is simply an Observable with the `connect()` method.
+`multicast` returns an Observable that looks like a normal Observable, but works like a Subject when it comes to subscribing
+* `multicast` returns a `ConnectableObservable`, which is simply an Observable with the `connect()` method.
 
-The `connect()` method is important to determine exactly when the shared Observable execution will start. Because `connect()` does `source.subscribe(subject)` under the hood, `connect()` returns a Subscription, which you can unsubscribe from in order to cancel the shared Observable execution.
+The `connect()` method is important to determine exactly when the shared Observable execution will start
+* Because `connect()` does `source.subscribe(subject)` under the hood, `connect()` returns a Subscription, which you can unsubscribe from in order to cancel the shared Observable execution.
 
 ### Reference counting
 

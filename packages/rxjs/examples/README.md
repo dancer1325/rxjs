@@ -9,6 +9,7 @@
 ## how were they run?
 * | EACH folder's path
   * `npm install`
-  * `node index.js`
+  * if the file is "*.ts" -> `tsc fileName.ts`
+  * `node fileName.js`
 
 # TODO:

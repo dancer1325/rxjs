@@ -1,10 +1,7 @@
 {
-  "name": "reference-examples",
+  "name": "examples",
   "version": "1.0.0",
   "description": "Examples",
-  "scripts": {
-    "build": "tsc of.ts"
-  },
   "author": "",
   "license": "ISC",
   "dependencies": {
