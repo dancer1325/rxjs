@@ -4,220 +4,80 @@
   * == ⭐️lazy Push collections / MULTIPLE values⭐️
   * ⚠️if you want to invoke the Observable & see these values -> subscribe | it⚠️
 
-|          | Single                                                                                                | Multiple                                                                                            |
-| -------- | ----------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| **Pull** | [`Function`](https://developer.mozilla.org/en-US/docs/Glossary/Function)                              | [`Iterator`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols) |
-| **Push** | [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) | [`Observable`](/api/index/class/Observable)                                                         |
+|          | Single                                                                                                                                                                   | Multiple                                                                                                                                                                                                                                             |
+|----------|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| **Pull** | [`Function`](https://developer.mozilla.org/en-US/docs/Glossary/Function) <br/> &nbsp;&nbsp; lazy evaluated computation <br/> &nbsp;&nbsp; \| invoke it, returns 1! value | [`Iterator`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols) <br/> &nbsp;&nbsp; lazy evaluated computation <br/> &nbsp;&nbsp; \| iterate it, sync return `[0, infinite)` |
+| **Push** | [`Promise`](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise) <br/> &nbsp;&nbsp; may OR NOT return 1 value                               | [`Observable`](/api/index/class/Observable) <br/> &nbsp;&nbsp; lazy evaluated computation <br/> &nbsp;&nbsp; \| invoke it, sync OR async return `[0, infinite)`                                                                                      |
 
 ## Pull vs Push
 
-_Pull_ and _Push_ are two different protocols that describe how a data _Producer_ can communicate with a data _Consumer_.
+* Pull & Push
+  * protocols / describe 👀how a data Producer can communicate -- with a -- data Consumer👀
 
-**What is Pull?** In Pull systems, the Consumer determines when it receives data from the data Producer
-* The Producer itself is unaware of when the data will be delivered to the Consumer.
 
-Every JavaScript Function is a Pull system
-* The function is a Producer of data, and the code that calls the function is consuming it by "pulling" out a _single_ return value from its call.
+|          | Producer                                         | Consumer                                       |
+| -------- |--------------------------------------------------|------------------------------------------------|
+| **Pull** | **Passive** == ⭐️produces data \| request them⭐️ | **Active** == ⭐️decides when to request data⭐️ |
+| **Push** | **Active:** produces data at its own pace.       | **Passive:** reacts to received data.          |
 
-ES2015 introduced [generator functions and iterators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*) (`function*`), another type of Pull system
-* Code that calls `iterator.next()` is the Consumer, "pulling" out _multiple_ values from the iterator (the Producer).
+### Pull systems,
+* Consumer
+  * determines when it receives data -- from the -- data Producer
+* Producer
+  * ⚠️itself is unaware of when the data will be delivered -- to the -- Consumer⚠️
+* _Examples:_
+  * _Example1:_ ALL JavaScript Function
+    * function == Producer of data
+    * code / calls the function == consumer of the function -- by -- "pulling" out 1! return value
+  * _Example2:_ [generator functions & iterators](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*) (`function*`)
+    * iterator == producer
+    * code / calls `iterator.next()` == consumer / pull out MULTIPLE values -- from the -- iterator
 
-|          | Producer                                   | Consumer                                    |
-| -------- | ------------------------------------------ | ------------------------------------------- |
-| **Pull** | **Passive:** produces data when requested. | **Active:** decides when data is requested. |
-| **Push** | **Active:** produces data at its own pace. | **Passive:** reacts to received data.       |
+### Push system
+* Producer
+  * determines when to send data -- to the -- Consumer
+* Consumer
+  * ⚠️itself is unaware of when it will receive that data⚠️
+* _Examples:_
+  * _Example1:_ promises
+    * promise == Producer
+      * delivers a resolved value -- to -- registered callbacks
+      * 👀responsible for: determining precisely when value is "pushed" -- to the -- callbacks👀
+        * != functions
+    * registered callbacks == consumers
+  * _Example2:_ Observables
+    * Observable == Producer
+      * MULTIPLE values -- to -- Observers
+    * Observers == Consumers
 
-**What is Push?** In Push systems, the Producer determines when to send data to the Consumer. The Consumer is unaware of when it will receive that data.
 
-Promises are the most common type of Push system in JavaScript today. A Promise (the Producer) delivers a resolved value to registered callbacks (the Consumers), but unlike functions, it is the Promise which is in charge of determining precisely when that value is "pushed" to the callbacks.
-
-RxJS introduces Observables, a new Push system for JavaScript. An Observable is a Producer of multiple values, "pushing" them to Observers (Consumers).
-
-- A **Function** is a lazily evaluated computation that synchronously returns a single value on invocation.
-- A **generator** is a lazily evaluated computation that synchronously returns zero to (potentially) infinite values on iteration.
-- A **Promise** is a computation that may (or may not) eventually return a single value.
-- An **Observable** is a lazily evaluated computation that can synchronously or asynchronously return zero to (potentially) infinite values from the time it's invoked onwards.
 
 <span class="informal">For more info about what to use when converting Observables to Promises, please refer to [this guide](/deprecations/to-promise).</span>
 
-## Observables as generalizations of functions
+## Observables == generalizations of functions
 
-Contrary to popular claims, Observables are not like EventEmitters nor are they like Promises for multiple values. Observables _may act_ like EventEmitters in some cases, namely when they are multicasted using RxJS Subjects, but usually they don't act like EventEmitters.
-
-<span class="informal">Observables are like functions with zero arguments, but generalize those to allow multiple values.</span>
-
-Consider the following:
-
-```ts
-function foo() {
-  console.log('Hello');
-  return 42;
-}
-
-const x = foo.call(); // same as foo()
-console.log(x);
-const y = foo.call(); // same as foo()
-console.log(y);
-```
-
-We expect to see as output:
-
-```none
-"Hello"
-42
-"Hello"
-42
-```
-
-You can write the same behavior above, but with Observables:
-
-```ts
-import { Observable } from 'rxjs';
-
-const foo = new Observable((subscriber) => {
-  console.log('Hello');
-  subscriber.next(42);
-});
-
-foo.subscribe((x) => {
-  console.log(x);
-});
-foo.subscribe((y) => {
-  console.log(y);
-});
-```
-
-And the output is the same:
-
-```none
-"Hello"
-42
-"Hello"
-42
-```
-
-This happens because both functions and Observables are lazy computations. If you don't call the function, the `console.log('Hello')` won't happen. Also with Observables, if you don't "call" it (with `subscribe`), the `console.log('Hello')` won't happen. Plus, "calling" or "subscribing" is an isolated operation: two function calls trigger two separate side effects, and two Observable subscribes trigger two separate side effects. As opposed to EventEmitters which share the side effects and have eager execution regardless of the existence of subscribers, Observables have no shared execution and are lazy.
-
-<span class="informal">Subscribing to an Observable is analogous to calling a Function.</span>
-
-Some people claim that Observables are asynchronous. That is not true. If you surround a function call with logs, like this:
-
-```ts
-console.log('before');
-console.log(foo.call());
-console.log('after');
-```
-
-You will see the output:
-
-```none
-"before"
-"Hello"
-42
-"after"
-```
-
-And this is the same behavior with Observables:
-
-```ts
-console.log('before');
-foo.subscribe((x) => {
-  console.log(x);
-});
-console.log('after');
-```
-
-And the output is:
-
-```none
-"before"
-"Hello"
-42
-"after"
-```
-
-Which proves the subscription of `foo` was entirely synchronous, just like a function.
-
-<span class="informal">Observables are able to deliver values either synchronously or asynchronously.</span>
-
-What is the difference between an Observable and a function? **Observables can "return" multiple values over time**, something which functions cannot. You can't do this:
-
-```ts
-function foo() {
-  console.log('Hello');
-  return 42;
-  return 100; // dead code. will never happen
-}
-```
-
-Functions can only return one value. Observables, however, can do this:
-
-```ts
-import { Observable } from 'rxjs';
-
-const foo = new Observable((subscriber) => {
-  console.log('Hello');
-  subscriber.next(42);
-  subscriber.next(100); // "return" another value
-  subscriber.next(200); // "return" yet another
-});
-
-console.log('before');
-foo.subscribe((x) => {
-  console.log(x);
-});
-console.log('after');
-```
-
-With synchronous output:
-
-```none
-"before"
-"Hello"
-42
-100
-200
-"after"
-```
-
-But you can also "return" values asynchronously:
-
-```ts
-import { Observable } from 'rxjs';
-
-const foo = new Observable((subscriber) => {
-  console.log('Hello');
-  subscriber.next(42);
-  subscriber.next(100);
-  subscriber.next(200);
-  setTimeout(() => {
-    subscriber.next(300); // happens asynchronously
-  }, 1000);
-});
-
-console.log('before');
-foo.subscribe((x) => {
-  console.log(x);
-});
-console.log('after');
-```
-
-With output:
-
-```none
-"before"
-"Hello"
-42
-100
-200
-"after"
-300
-```
-
-Conclusion:
-
-- `func.call()` means "_give me one value synchronously_"
-- `observable.subscribe()` means "_give me any amount of values, either synchronously or asynchronously_"
+* Observables
+  * ❌!= EventEmitters❌
+    * EXCEPT TO,
+      * ⚠️observables are multicasted -- via -- RxJS Subjects⚠️
+    * Reason: 🧠
+      * eager execution vs lazy
+      * side effects vs shared execution🧠
+  * ❌!= Promises | MULTIPLE values❌
+  * == 💡functions / 0 arguments + ALLOW MULTIPLE values + PUSH system💡
+    * 0 arguments
+      * == ❌`.subscribe()` does NOT receive arguments❌
+    * invoke function vs `.subscribe()`
+    * Reason:🧠
+      * BOTH are lazy computations
+      * "calling" OR "subscribing" == isolated operation
+        * 2 function calls -> 2 separate side effects
+        * 2 Observable subscribes -> 2 separate side effects🧠
+  * ❌!= asynchronous❌
+    * == function
+    * Reason: 🧠they can deliver values either synchronously OR asynchronously🧠
+      * != function
+        * Reason: 🧠ONLY can be sync🧠
 
 ## Anatomy of an Observable
 
