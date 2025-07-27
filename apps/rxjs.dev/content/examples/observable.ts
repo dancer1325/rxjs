@@ -211,25 +211,6 @@ function subscribingToObservables() {
   observableCreationViaOf.subscribe(x => console.log('.subscribe() - FIRST ', x));
   observableCreationViaOf.subscribe(x => console.log('.subscribe() - SECOND  ', x));    // INDEPENDENT -- to -- PREVIOUS one
 
-// 9.2
-  let executionCount = 0;
-  const observableToSubscribeDefiningSubscriberFunction = new Observable((subscriber) => {
-    console.log(`🚀 Execution #${executionCount} started`);
-    executionCount++;
-    subscriber.next(`observableToSubscribeDefiningSubscriberFunction - Value from execution #${executionCount}`);
-    subscriber.complete();
-  });
-
-// Observer 1
-  observableToSubscribeDefiningSubscriberFunction.subscribe((value) => {
-    console.log('observableToSubscribeDefiningSubscriberFunction - Observer 1 received:', value);
-  });
-
-// Observer 2
-  observableToSubscribeDefiningSubscriberFunction.subscribe((value) => {
-    console.log('observableToSubscribeDefiningSubscriberFunction - Observer 2 received:', value);
-  });
-
 // 9.3    subscribe to an Observable == calling a function / provide callbacks | data will be delivered to
 // 9.3.1  function / accepts callbacks -- to -- deliver data
   function functionWhichProvideCallbacksOnWhichDataAreDeliveredTo(onSuccess, onError, onComplete) {
@@ -249,11 +230,10 @@ function subscribingToObservables() {
     () => console.log('Completed!'),                 // callback -- to -- complete
   );
 
-// 9.3.2  observable
-  const observableSubscribeSimilarCallAFunctionsWithCallbacks = new Observable((subscriber) => {
+// 9.3.2  observable equivalent
+  const observableEquivalent = new Observable((subscriber) => {
     console.log('Observable executing...');
 
-    // Simulate processing
     subscriber.next('First data');
     subscriber.next('Second data');
 
@@ -263,13 +243,14 @@ function subscribingToObservables() {
     }, 1000);
   });
 
-  observableSubscribeSimilarCallAFunctionsWithCallbacks.subscribe({
-    next: (data) => console.log('Success:', data),     // callback -- for -- data
-    error: (error) => console.error('Error:', error),  // callback -- for -- errors
-    complete: () => console.log('Completed!'),          // callback -- to -- complete
+  // Subscribe providing callbacks where data will be delivered
+  observableEquivalent.subscribe({
+    next: (data) => console.log('Success:', data),
+    error: (error) => console.error('Error:', error),
+    complete: () => console.log('Completed!')
   });
 
-// 9.4  vs event handler APIs
+  // 9.4  vs event handler APIs
 // 9.4.1 NOT hold observer list vs hold registered listeners
 // 9.4.1.1    event handler API
   const emitter = new EventEmitter();
@@ -284,15 +265,15 @@ function subscribingToObservables() {
     console.log(`Handler 2 - click #${clickCount}`);
   }
 
-  // Register listeners - they get ADDED to a list
+// Register listeners - they get ADDED to a list
   emitter.on('click', handler1);
   emitter.on('click', handler2);
 
-  // Emit event - ALL listeners receive the SAME event
+// Emit event - ALL listeners receive the SAME event
   console.log('--- Emitting click event ---');
   emitter.emit('click'); // Both handlers execute
 
-  // Remove specific listener
+// Remove specific listener
   emitter.removeListener('click', handler1);
   emitter.emit('click'); // Only handler2 executes
 
@@ -314,29 +295,88 @@ function subscribingToObservables() {
 }
 subscribingToObservables();
 
-// 10.  executing observables
-// 10.1   error OR complete   are FINAL values
-const observableWithFinalValues = new Observable(function subscribe(subscriber) {
-  subscriber.next(1);
-  subscriber.next(2);
-  subscriber.next(3);
-  subscriber.complete();
-  subscriber.next(4);         // NOT delivered
-});
-observableWithFinalValues.subscribe(x => console.log('error OR complete are FINAL values - observableWithFinalValues ', x));
+const observableSubscribeSimilarCallAFunctionsWithCallbacks = new Observable((subscriber) => {
+  console.log('Observable executing...');
 
-// 10.2   | `subscribe`, wrap with `try`/`catch` block
-const observableWrapped = new Observable(function subscribe(subscriber) {
-  try {
+  // Simulate processing
+  subscriber.next('First data');
+  subscriber.next('Second data');
+
+  setTimeout(() => {
+    subscriber.next('Async data');
+    subscriber.complete();
+  }, 1000);
+});
+observableSubscribeSimilarCallAFunctionsWithCallbacks.subscribe({
+  next: (data) => console.log('Success:', data),     // callback -- for -- data
+  error: (error) => console.error('Error:', error),  // callback -- for -- errors
+  complete: () => console.log('Completed!'),          // callback -- to -- complete
+});
+
+// 10.  executing observables
+function executingObservables() {
+// 10.1   error OR complete   are FINAL values
+  const observableWithFinalValues = new Observable(function subscribe(subscriber) {
     subscriber.next(1);
     subscriber.next(2);
     subscriber.next(3);
-    throw new Error("check wrap");
-    subscriber.complete();    // death code     ==  NOT reached
-  } catch (err) {
-    subscriber.error(err);          // if error is caught -> delivers the error
-  }
+    subscriber.complete();
+    subscriber.next(4);         // NOT delivered
+  });
+  observableWithFinalValues.subscribe(x => console.log('error OR complete are FINAL values - observableWithFinalValues ', x));
+
+// 10.2   | `subscribe`, wrap with `try`/`catch` block
+  const observableWrapped = new Observable(function subscribe(subscriber) {
+    try {
+      subscriber.next(1);
+      subscriber.next(2);
+      subscriber.next(3);
+      throw new Error('check wrap');
+      subscriber.complete();    // death code     ==  NOT reached
+    } catch (err) {
+      subscriber.error(err);          // if error is caught -> delivers the error
+    }
+  });
+  observableWrapped.subscribe(x => console.log('observableWrapped ', x));
+  console.log('observableWrapped AFTERWARD');
+}
+executingObservables();
+
+// 11. Disposing Observable Executions - unsubscribe
+// 11.1   AUTOMATICALLY closed
+const observableToDisposeAutomaticallyCompleted = new Observable(function subscribe(subscriber) {
+  subscriber.next(1);
+  subscriber.complete();      // IMMEDIATELY closed
 });
-observableWrapped.subscribe(x => console.log('observableWrapped ', x));
-console.log("observableWrapped AFTERWARD");
+const subscription = observableToDisposeAutomaticallyCompleted.subscribe(x => console.log('observableToDispose ', x))
+console.log('observableToDisposeAutomaticallyCompleted - subscription ', subscription.closed);        // ALREADY completed    == closed
+subscription.unsubscribe();
+console.log('observableToDisposeAutomaticallyCompleted - subscription ', subscription.closed);
+
+// 11.2 MANUALLY closed
+const observableToDisposeNOAutomaticallyCompleted = new Observable(function subscribe(subscriber) {
+  subscriber.next(1);
+});
+const subscriptionWithoutComplete = observableToDisposeNOAutomaticallyCompleted.subscribe(x => console.log('observableToDispose ', x))
+console.log('observableToDisposeNOAutomaticallyCompleted - subscription ', subscriptionWithoutComplete.closed);        // NOT completed
+subscriptionWithoutComplete.unsubscribe();
+console.log('observableToDisposeNOAutomaticallyCompleted - subscription ', subscriptionWithoutComplete.closed);
+
+// 11.3 define custom `unsubscribe()`
+const observableWithCustomUnsubscribe = new Observable(function subscribe(subscriber) {
+  subscriber.next(1);
+
+  // Define custom cleanup/unsubscribe function
+  return function unsubscribe() {
+    console.log('observableWithCustomUnsubscribe - custom unsubscribe function called');
+  };
+});
+
+const subscriptionOfCustomUnsubscribe = observableWithCustomUnsubscribe.subscribe(x => {
+  console.log('observableWithCustomUnsubscribe: ', x);
+});
+
+console.log('observableWithCustomUnsubscribe - BEFORE unsubscribe - closed:', subscriptionOfCustomUnsubscribe.closed);
+subscriptionOfCustomUnsubscribe.unsubscribe();      // invoked the custom unsubscribe()
+console.log('observableWithCustomUnsubscribe - AFTER unsubscribe - closed:', subscriptionOfCustomUnsubscribe.closed);
 // TODO:

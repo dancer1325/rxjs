@@ -134,71 +134,33 @@
 
 ### Disposing Observable Executions
 
-Because Observable Executions may be infinite, and it's common for an Observer to want to abort execution in finite time, we need an API for canceling an execution
-* Since each execution is exclusive to one Observer only, once the Observer is done receiving values, it has to have a way to stop the execution, in order to avoid wasting computation power or memory resources.
+* `observable.subscribe`
+  * Observer gets attached -- to the -- NEWLY created Observable execution
+  * returns `Subscription`
+    * == object
+    * == 💡ongoing execution💡
+    * [MORE](subscription.md)
 
-When `observable.subscribe` is called, the Observer gets attached to the newly created Observable execution
-* This call also returns an object, the `Subscription`:
+* `subscription.unsubscribe()`
+  * allows
+    * cancel ongoing execution | finite time
+      * Reason:🧠Observable Executions may be infinite🧠
+  * uses
+    * avoid wasting computation power OR memory resources
 
-```ts
-const subscription = observable.subscribe((x) => console.log(x));
-```
+* define custom `unsubscribe()`
+  ```
+  new Observable(function subscribe(subscriber) {
+    ...
+    return function unsubscribe() {
+      console.log('Custom unsubscribe function called - cleaning up resources');
+    };
+  });
+  ```
 
-The Subscription represents the ongoing execution, and has a minimal API which allows you to cancel that execution
-* Read more about the [`Subscription` type here](./guide/subscription)
-* With `subscription.unsubscribe()` you can cancel the ongoing execution:
-
-```ts
-import { from } from 'rxjs';
-
-const observable = from([10, 20, 30]);
-const subscription = observable.subscribe((x) => console.log(x));
-// Later:
-subscription.unsubscribe();
-```
-
-<span class="informal">When you subscribe, you get back a Subscription, which represents the ongoing execution
-* Just call `unsubscribe()` to cancel the execution.</span>
-
-Each Observable must define how to dispose resources of that execution when we create the Observable using `create()`
-* You can do that by returning a custom `unsubscribe` function from within `function subscribe()`.
-
-For instance, this is how we clear an interval execution set with `setInterval`:
-
-```ts
-import { Observable } from 'rxjs';
-
-const observable = new Observable(function subscribe(subscriber) {
-  // Keep track of the interval resource
-  const intervalId = setInterval(() => {
-    subscriber.next('hi');
-  }, 1000);
-
-  // Provide a way of canceling and disposing the interval resource
-  return function unsubscribe() {
-    clearInterval(intervalId);
-  };
-});
-```
-
-Just like `observable.subscribe` resembles `new Observable(function subscribe() {...})`, the `unsubscribe` we return from `subscribe` is conceptually equal to `subscription.unsubscribe`
-* In fact, if we remove the ReactiveX types surrounding these concepts, we're left with rather straightforward JavaScript.
-
-```ts
-function subscribe(subscriber) {
-  const intervalId = setInterval(() => {
-    subscriber.next('hi');
-  }, 1000);
-
-  return function unsubscribe() {
-    clearInterval(intervalId);
-  };
-}
-
-const unsubscribe = subscribe({ next: (x) => console.log(x) });
-
-// Later:
-unsubscribe(); // dispose the resources
-```
-
-The reason why we use Rx types like Observable, Observer, and Subscription is to get safety (such as the Observable Contract) and composability with Operators.
+* Rx types
+  * allows
+    * safety
+      * Reason:🧠follow Observable Contract🧠
+    * composability -- with -- Operators
+  * _Example:_ Observable, Observer, and Subscription
