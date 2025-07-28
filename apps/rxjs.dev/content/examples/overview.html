@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>RxJS Overview</title>
+  <script src="https://unpkg.com/rxjs@7/dist/bundles/rxjs.umd.min.js"></script>
+</head>
+<body>
+<h1>RxJS Overview Example</h1>
+<button id="clickBtn">Click me!</button>
+
+<script>
+  // 1. reactivex vs register event listener
+  // 1.1 -- via -- register event listener
+  document.addEventListener('click', () => console.log('register event listener - Clicked!'));
+
+  // 1.2 -- via -- observable
+  rxjs.fromEvent(document, 'click').subscribe(() => console.log('observable - Clicked!'));    // SAME as -- via -- registered even listener
+
+  // 2. avoid mess up your state
+  // 2.1 -- via -- register event listener, mess up your state
+  let count = 0;
+  document.addEventListener('click', () => console.log(`Clicked ${++count} times`));    // count is modified      == state is modified    -- Reason:🧠global variable🧠--
+  // 2.2  -- via -- RxJs
+  rxjs.fromEvent(document, 'click')
+    .pipe(rxjs.operators.scan((count) => count + 1, 0))      //  internal variable    != state
+    .subscribe((count) => console.log(`Clicked ${count} times`));
+  // 2.3 JS
+  let anotherCount = 0;
+  let rate = 1000;
+  let lastClick = Date.now() - rate;
+  document.addEventListener('click', () => {
+    if (Date.now() - lastClick >= rate) {
+      console.log(`Clicked ${++anotherCount} times`);
+      lastClick = Date.now();
+    }
+  });
+
+  // 3. transform the values passed -- through -- your observables
+  // 3.1  JS
+  let countTransformValues = 0;
+  const rateTransformValues = 1000;
+  let lastClickTransformValues = Date.now() - rateTransformValues;
+  document.addEventListener('click', (event) => {
+    if (Date.now() - lastClickTransformValues >= rateTransformValues) {
+      countTransformValues += event.clientX;
+      console.log(countTransformValues);
+      lastClickTransformValues = Date.now();
+    }
+  });
+  // 3.2 RxJs
+  rxjs.fromEvent(document, 'click')
+    .pipe(
+      rxjs.operators.throttleTime(1000),
+      rxjs.operators.map((event) => event.clientX),
+      rxjs.operators.scan((count, clientX) => count + clientX, 0)
+    )
+    .subscribe((count) => console.log(count));
+</script>
+</body>
+</html>
