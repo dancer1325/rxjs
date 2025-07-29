@@ -1,67 +1,50 @@
 # Importing instructions
 
-There are different ways you can {@link guide/installation install} RxJS. Using/importing RxJS depends on
-the used RxJS version, but also depends on the used installation method.
+* -- depends on --
+  * used RxJS version
+  * used installation method
 
-[Pipeable operators](https://v6.rxjs.dev/guide/v6/pipeable-operators) were introduced in RxJS version
-5.5. This enabled all operators to be exported from a single place. This new export site was introduced
-with RxJS version 6 where all pipeable operators could have been imported from `'rxjs/operators'`. For
-example, `import { map } from 'rxjs/operators'`.
+* `import  from 'rxjs/operators'`
+  * -- thanks to -- [Pipeable operators](https://v6.rxjs.dev/guide/v6/pipeable-operators)
+    * introduced | RxJS version 5.5
+    * enable ALL operators can be exported -- from -- 1! place
+  * _Example:_ `import { map } from 'rxjs/operators'`
 
-## New in RxJS v7.2.0
+## | RxJS v7.2.0
 
-<span class="informal">**With RxJS v7.2.0, most operators have been moved to `{@link api#index 'rxjs'}`
-export site. This means that the preferred way to import operators is from `'rxjs'`, while
-`'rxjs/operators'` export site has been deprecated.**</span>
+* 💡MOST operators have been moved -- to -- `'rxjs'`💡
+  * ==`import  from 'rxjs'`
+  * DIFFERENT naming -- `oldNameWith` --
 
-For example, instead of using:
+* `'rxjs/operators'` export site
+  * ⚠️deprecated⚠️
+    * == | SOME next major version, it will be removed
 
-```ts
-import { map } from 'rxjs/operators';
-```
+## | RxJS v7, export sites
 
-**the preferred way** is to use:
-
-```ts
-import { map } from 'rxjs';
-```
-
-Although the old way of importing operators is still active, it will be removed in one of the next major
-versions.
-
-Click {@link #how-to-migrate here to see} how to migrate.
-
-## Export sites
-
-RxJS v7 exports 6 different locations out of which you can import what you need. Those are:
-
-- `{@link api#index 'rxjs'}` - for example: `import { of } from 'rxjs';`
-- `{@link api#operators 'rxjs/operators'}` - for example: `import { map } from 'rxjs/operators';`
-- `{@link api#ajax 'rxjs/ajax'}` - for example: `import { ajax } from 'rxjs/ajax';`
-- `{@link api#fetch 'rxjs/fetch'}` - for example: `import { fromFetch } from 'rxjs/fetch';`
-- `{@link api#webSocket 'rxjs/webSocket'}` - for example: `import { webSocket } from 'rxjs/webSocket';`
-- `{@link api#testing 'rxjs/testing'}` - for example: `import { TestScheduler } from 'rxjs/testing';`
+* `'rxjs'`
+* `'rxjs/operators'`
+* `'rxjs/ajax'`
+* `'rxjs/fetch'`
+* `'rxjs/webSocket'`
+* `'rxjs/testing'`
 
 ### How to migrate?
 
-While nothing has been removed from `'rxjs/operators'`, it is strongly recommended doing the operator
-imports from `'rxjs'`. Almost all operator function exports have been moved to `'rxjs'`, but only a
-couple of old and deprecated operators have stayed in the `'rxjs/operators'`. Those operator functions
-are now mostly deprecated and most of them have their either static operator substitution or are kept as
-operators, but have a new name so that they are different to their static creation counter-part (usually
-ending with `With`). Those are:
+| `'rxjs/operators'` Operator                             | Replace -- with -- Static Creation Operator | Replace -- with -- ⚠️NEW⚠️ Operator Name |
+| ------------------------------------------------------- |---------------------------------------|--------------------------------------|
+| [`combineLatest`](/api/operators/combineLatest)         | `combineLatest`                       | `combineLatestWith`                  |
+| [`concat`](/api/operators/concat)                       | `concat`                         | `concatWith`                    |
+| [`merge`](/api/operators/merge)                         | `merge`                          | `mergeWith`                     |
+| [`onErrorResumeNext`](/api/operators/onErrorResumeNext) | `onErrorResumeNext`              | `onErrorResumeNextWith`         |
+| [`race`](/api/operators/race)                           | `race`                           | `raceWith`                     |
+| [`zip`](/api/operators/zip)                             | `zip`                            | `zipWith`                       |
 
-| `'rxjs/operators'` Operator                             | Replace With Static Creation Operator | Replace With New Operator Name |
-| ------------------------------------------------------- | ------------------------------------- | ------------------------------ |
-| [`combineLatest`](/api/operators/combineLatest)         | {@link combineLatest}                 | {@link combineLatestWith}      |
-| [`concat`](/api/operators/concat)                       | {@link concat}                        | {@link concatWith}             |
-| [`merge`](/api/operators/merge)                         | {@link merge}                         | {@link mergeWith}              |
-| [`onErrorResumeNext`](/api/operators/onErrorResumeNext) | {@link onErrorResumeNext}             | {@link onErrorResumeNextWith}  |
-| [`race`](/api/operators/race)                           | {@link race}                          | {@link raceWith}               |
-| [`zip`](/api/operators/zip)                             | {@link zip}                           | {@link zipWith}                |
+* EXCEPTION
+  * `partition`
+    * SAME name
 
-`partition`, the operator, is a special case, as it is deprecated and you should be using the `partition` creation function exported from `'rxjs'` instead.
-
+* TODO:
 For example, the old and deprecated way of using [`merge`](/api/operators/merge) from `'rxjs/operators'`
 is:
 

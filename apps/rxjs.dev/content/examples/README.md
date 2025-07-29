@@ -9,5 +9,10 @@
 * if it's "*.ts" -> `tsc fileName.ts`
   * generate "fileName.js"
 * `node fileName.js`
+  * Problems:
+    * | importingExportSites,
+      * Problem1: ReferenceError: WebSocket is not defined
+        * Attempt1: `npm install ws @types/ws`
+        * Solution: TODO:
 ## ".html"
 * | browser, opens it
