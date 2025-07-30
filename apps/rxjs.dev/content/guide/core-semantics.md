@@ -1,19 +1,36 @@
 # RxJS Core Semantics
 
-Starting in version 8, all RxJS operators that are provided in the core library MUST meet the following semantics. In the current version, version 7, all operators SHOULD meet the following semantics (as guidelines). If they do not, we need to track the issue on [GitHub](https://github.com/ReactiveX/rxjs/issues).
+* | RxJS v8,
+  * ALL operators / provided | core library,
+    * ⚠️MUST meet the following semantics⚠️
+* | RxJS v7,
+  * ALL operators
+    * ⚠️SHOULD meet the following semantics⚠️
 
-## Purpose
-
-The purpose of these semantics is provide predictable behavior for the users of our library, and to ensure consistent behavior between our many different operators. It should be noted that at the time of this writing, we don't always adhere to these semantic guidelines. This document is to serve as a goalpost for upcoming changes and work as much as it is to help describe the library. This is also a "living document" and is subject to change.
+* goal
+  * provide
+    * predictable behavior for the users of our library
+  * ensure
+    * consistent behavior BETWEEN OUR DIFFERENT operators
 
 ## General Design Guidelines
 
-**Functions such as operators, constructors, and creation functions, should use named parameters in cases where there is more than 1 argument, and arguments after the first are non-obvious.** The primary use case should be streamlined to work without configuration. For example, `fakeFlattenMap(n => of(n))` is fine, but `fakeFlattenMap(n => of(n), 1)` is less readable than `fakeFlattenMap(n => of(n), { maxConcurrent: 1 })`. Other things, like `of(1, 2, 3)` are obvious enough that named parameters don't make sense.
+* functions / > 1 argument & AFTER FIRST time, arguments are NON-obvious
+  * -> use 👀named parameters in-cases👀
+    * Reason:🧠primary use case should work streamline + WITHOUT configuration
+    * _Example:_
+      * `fakeFlattenMap(n => of(n))` == fine
+      * if there are > 1 argument
+        * `fakeFlattenMap(n => of(n), 1)` -- hard to read
+        * `fakeFlattenMap(n => of(n), { maxConcurrent: 1 })` -- easier to read
+  * _Example of functions:_ operators, constructors & creation functions
 
 ## Operators
 
-- MUST be a function that returns an [operator function](https://rxjs.dev/api/index/interface/OperatorFunction). That is `(source: Observable<In>) => Observable<Out>`.
-- The returned operator function MUST be [referentially transparent](https://en.wikipedia.org/wiki/Referential_transparency). That is to say, that if you capture the return value of the operator (e.g. `const double => map(x => x + x)`), you can use that value to operate on any many observables as you like without changing any underlying state in the operator reference. (e.g. `a$.pipe(double)` and `b$.pipe(double)`).
+* == function / returns an [`OperatorFunction`](https://rxjs.dev/api/index/interface/OperatorFunction)
+  * == `(source: Observable<In>) => Observable<Out>`
+  * `OperatorFunction` MUST be [referentially transparent](https://en.wikipedia.org/wiki/Referential_transparency)
+* TODO: That is to say, that if you capture the return value of the operator (e.g. `const double => map(x => x + x)`), you can use that value to operate on any many observables as you like without changing any underlying state in the operator reference. (e.g. `a$.pipe(double)` and `b$.pipe(double)`).
 - The observable returned by the operator function MUST subscribe to the source.
 - If the operation performed by the operator can tell it not change anything about the output of the source, it MUST return the reference to the source. For example `take(Infinity)` or `skip(0)`.
 - Operators that accept a "notifier", that is another observable source that is used to trigger some behavior, must accept any type that can be converted to an `Observable` with `from`. For example `takeUntil`.
@@ -28,6 +45,22 @@ The purpose of these semantics is provide predictable behavior for the users of 
 
 ## Creation Functions
 
-- Names MUST NOT end in `With`. That is reserved for the operator counter parts of creation functions.
-- MAY have "result selectors". This is a secondary argument that provides the ability to "map" values before they're emitted from the resulting observable.
-- IF the creation function accepts a "result selector", it must not accept "n-arguments" ahead of that result selector. Instead, it should accept an array or possibly an object. (bad: `combineThings(sourceA$, sourceB$, (a, b) => a + b)`, good: `combineThings([sourceA$, sourceB$], (a, b) => a + b)`. In this case, it may be okay to provide the result selector as a second argument, rather than as a named parameter, as the use should be fairly obvious.
+- names
+  - ❌MUST NOT end in `With`❌
+    - Reason:🧠reserved for the operator counter parts of creation functions🧠
+- MAY have "result selectors"
+  - == secondary argument /
+    - BEFORE emitting -- from the -- resulting observable,
+      - enables you -- to -- "map" values
+- if it accepts a "result selector" ->
+  - ❌must NOT accept "n-arguments" -- ahead of -- that result selector❌
+
+    ```
+    combineThings(sourceA$, sourceB$, (a, b) => a + b)
+    ```
+
+  - FIRST argument: array OR object + SECOND argument: result selector
+
+    ```
+    combineThings([sourceA$, sourceB$], (a, b) => a + b)
+    ```
