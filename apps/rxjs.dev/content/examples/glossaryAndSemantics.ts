@@ -58,7 +58,10 @@ function majorEntities() {
       const intervalId = setInterval(() => {
         subscriber.next(Math.random());
       }, 1000);
-
+      const timeoutId = setTimeout(() => {
+        subscriber.complete();
+        clearInterval(intervalId);
+      }, 10000);
       return () => clearInterval(intervalId);
     });
 
