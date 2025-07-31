@@ -56,7 +56,7 @@
 * ALLOWED mechanisms
   * [`Observable.subscribe` method](/api/index/class/Observable#subscribe)
     * MAIN one
-  * [`forEach` method](/api/index/class/Observable#forEach),
+  * [`Observable.forEach` method](/api/index/class/Observable#forEach)
   * functions
     * [`lastValueFrom`](/api/index/function/lastValueFrom),
     * [`firstValueFrom`](/api/index/function/firstValueFrom),

@@ -1,4 +1,4 @@
-import { of, Observable, Subject, Subscription } from 'rxjs';
+import { of, Observable, Subject, Subscription, lastValueFrom, firstValueFrom } from 'rxjs';
 
 function majorEntities() {
 // 1. consumer      == code / subscribes | observable
@@ -17,7 +17,6 @@ function majorEntities() {
       complete: () => console.log('Complete!'),
     });
   }
-
   consumer();
 
 // 2. producer
@@ -134,3 +133,32 @@ function majorEntities() {
   observer();
 }
 majorEntities();
+
+// 1. subscribe
+
+const data$ = new Observable(subscriber => {
+  subscriber.next('data1');
+  subscriber.next('data2');
+  subscriber.complete();
+});
+
+// 1.1  Observable.subscribe(Observer)
+data$.subscribe({
+  next: value => console.log('Observable.subscribe(Observer) - next', value),
+  complete: () => console.log('Observable.subscribe(Observer) - complete')
+});
+
+// Observable.forEach(Observer)
+data$.forEach(value => {
+  console.log('Observable.forEach(Observer) - next ', value);
+});
+
+// lastValueFrom() function
+lastValueFrom(data$).then(last => {
+  console.log('lastValueFrom() ', last);
+});
+
+// firstValueFrom() function
+firstValueFrom(data$).then(first => {
+  console.log('firstValueFrom() ', first);
+});
