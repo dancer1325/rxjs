@@ -15,18 +15,19 @@
 ### Producer
 
 * == system or thing / source of values -- are pushed -- out of the observable subscription == to the consumer
-* _Example:_ `WebSocket`, simple iteration | `Array`
-* | [subscribe](#subscribe) action,
-  * MOST often created
-    * -> -- "owned" by a -- [subscription](#subscription) / 1:1 way
-* uses
-  * shared BETWEEN MANY subscriptions,
-  * if it is created outside of the [subscribe](#subscribe) action -> one-to-many == [multicast](#multicast)
+* ways to create
+  * | [subscribe](#subscribe) action,
+    * MAIN use case
+    * 💡producer -- [subscription](#subscription) / 1:1💡
+  * | OUTSIDE [subscribe](#subscribe) action -> 1-to-many == [multicast](#multicast)
+    * allows
+      * sharing producer BETWEEN MANY subscriptions
 
 ### Subscription
 
 * == contract / [consumer](#consumer) -- is [observing](#observation) values pushed by a -- [producer](#producer)
-* != `Subscription` class or type
+  * == concept
+* ⚠️!= `Subscription` class or type⚠️
 * 's lifetime == [[subscribe](#subscribe) action is initiated, BEFORE the [subscribe](#subscribe) action is finished]
 
 ### Observable
@@ -45,7 +46,7 @@
 
 ## Major Actions
 
-There are specific actions and events that occur between major entities in RxJS that need to be defined. These major actions are the highest level events that occur within various parts in RxJS.
+* == 💡the highest level events / occur | VARIOUS parts in RxJS💡
 
 ### Subscribe
 
@@ -63,31 +64,51 @@ There are specific actions and events that occur between major entities in RxJS 
 
 ### Finalization
 
-The act of cleaning up resources used by a producer. This is guaranteed to happen on `error`, `complete`, or if unsubscription occurs. This is not to be confused with [unsubscription](#unsubscription), but it does always happen during unsubscription.
+* := cleaning up resources -- used by a -- producer
+* uses |
+  * `error`,
+  * `complete`
+  * unsubscription
+* ⚠️!= [unsubscription](#unsubscription)⚠️
 
 ### Unsubscription
 
-The act of a [consumer](#consumer) telling a [producer](#producer) is no longer interested in receiving values. Causes [Finalization](#finalization)
+The act of a [consumer](#consumer) telling a [producer](#producer) is no longer interested in receiving values
+* Causes [Finalization](#finalization)
 
 ### Observation
 
-A [consumer](#consumer) reacting to [next](#next), [error](#error), or [complete](#complete) [notifications](#notification). This can only happen _during_ [subscription](#subscription).
+* == [consumer](#consumer) reacting -- to --
+  * [next](#next) [notifications](#notification)
+  * [error](#error) [notifications](#notification)
+  * [complete](#complete) [notifications](#notification)
+* uses
+  * ONLY | [subscription](#subscription)
 
 ### Observation Chain
 
-When an [observable](#observable) uses another [observable](#observable) as a [producer](#producer), an "observation chain" is set up. That is a chain of [observation](#observation) such that multiple [observers](#observer) are [notifying](#notification) each other in a unidirectional way toward the final [consumer](#consumer).
+When an [observable](#observable) uses another [observable](#observable) as a [producer](#producer), an "observation chain" is set up
+* That is a chain of [observation](#observation) such that multiple [observers](#observer) are [notifying](#notification) each other in a unidirectional way toward the final [consumer](#consumer).
 
 ### Next
 
-A value has been pushed to the [consumer](#consumer) to be [observed](#observation). Will only happen during [subscription](#subscription), and cannot happen after [error](#error), [complete](#error), or [unsubscription](#unsubscription). Logically, this also means it cannot happen after [finalization](#finalization).
+A value has been pushed to the [consumer](#consumer) to be [observed](#observation)
+* Will only happen during [subscription](#subscription), and cannot happen after [error](#error), [complete](#error), or [unsubscription](#unsubscription)
+* Logically, this also means it cannot happen after [finalization](#finalization).
 
 ### Error
 
-The [producer](#producer) has encountered a problem and is notifying the [consumer](#consumer). This is a notification that the [producer](#producer) will no longer send values and will [finalize](#finalization). This cannot occur after [complete](#complete), any other [error](#error), or [unsubscription](#unsubscription). Logically, this also means it cannot happen after [finalization](#finalization).
+The [producer](#producer) has encountered a problem and is notifying the [consumer](#consumer)
+* This is a notification that the [producer](#producer) will no longer send values and will [finalize](#finalization)
+* This cannot occur after [complete](#complete), any other [error](#error), or [unsubscription](#unsubscription)
+* Logically, this also means it cannot happen after [finalization](#finalization).
 
 ### Complete
 
-The [producer](#producer) is notifying the [consumer](#consumer) that it is done [nexting](#Next) values, without error, will send no more values, and it will [finalize](#finalization). [Completion](#complete) cannot occur after an [error](#error), or [unsubscribe](#unsubscription). [Complete](#complete) cannot be called twice. [Complete](#complete), if it occurs, will always happen before [finalization](#finalization).
+The [producer](#producer) is notifying the [consumer](#consumer) that it is done [nexting](#Next) values, without error, will send no more values, and it will [finalize](#finalization)
+* [Completion](#complete) cannot occur after an [error](#error), or [unsubscribe](#unsubscription)
+* [Complete](#complete) cannot be called twice
+* [Complete](#complete), if it occurs, will always happen before [finalization](#finalization).
 
 ### Notification
 
