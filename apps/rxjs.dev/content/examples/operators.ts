@@ -19,12 +19,20 @@ const observable = of(1, 2, 3);
 // 2.2 interval()
 const observableViaInterval = interval(1000 /* number of milliseconds */);
 
-
 // 1. pipeable operators
 observable.pipe(map((x) => x * x))    // 1.1 -- map() --
   .pipe(first())                                      // 1.2 first()
   .subscribe((v) => console.log(`operators - value: ${v}`));      // observer / created | subscribe the observable
 
+const sourceObservable = of(2,4,6)
+const returnedPipeOperator = sourceObservable.pipe(first())
+
+// 1.3  operator returns ANOTHER observable
+console.log(`pipeable operator - returnedPipeOperator - typeof returnedPipeOperator ${typeof returnedPipeOperator} - returnedPipeOperator.constructor.name ${returnedPipeOperator.constructor.name}`)
+
+// 1.4 if you subscribe | output observable -> ALSO subscribe | source Observable
+returnedPipeOperator.subscribe((v) => console.log(`pipeable operator - subscribe | returned observable -> ALSO source observable - next ${v}`));
+// receive values & ONLY source observable emits values
 
 // 5. pipeable operator -- via -- NOT recommended style       -- op1()(obs) --
 first()(observable)
