@@ -53,7 +53,7 @@ will need to be removed manually with {@link #remove}
   * `constructor(subscribe?: (this: Observable<T>, subscriber: Subscriber<T>) => TeardownLogic) {}`
     * `subscribe`
       * == function /
-        * | initially subscribe the Observable, is called
+        * 💡| initially subscribe the Observable, is called💡
         * 👀passed -- to the -- `Subscriber`👀
   * TODO:
 
