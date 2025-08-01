@@ -73,8 +73,8 @@
 
 ### Unsubscription
 
-The act of a [consumer](#consumer) telling a [producer](#producer) is no longer interested in receiving values
-* Causes [Finalization](#finalization)
+* == [consumer's act](#consumer) / inform a [producer](#producer) is NO longer interested in receiving values
+  * -> [Finalization](#finalization)
 
 ### Observation
 
@@ -87,8 +87,9 @@ The act of a [consumer](#consumer) telling a [producer](#producer) is no longer 
 
 ### Observation Chain
 
-When an [observable](#observable) uses another [observable](#observable) as a [producer](#producer), an "observation chain" is set up
-* That is a chain of [observation](#observation) such that multiple [observers](#observer) are [notifying](#notification) each other in a unidirectional way toward the final [consumer](#consumer).
+* how to set up?
+  * [observable](#observable) / uses another [observable](#observable) -- as a -- [producer](#producer)
+* == chain of [observation](#observation) / MULTIPLE [observers](#observer) are [notifying](#notification) each other -- via -- 1direction way toward the final [consumer](#consumer)
 
 ### Next
 

@@ -1,4 +1,4 @@
-import { of, Observable, Subject, Subscription, lastValueFrom, firstValueFrom } from 'rxjs';
+import { of, Observable, Subject, Subscription, lastValueFrom, firstValueFrom, interval } from 'rxjs';
 
 function majorEntities() {
 // 1. consumer      == code / subscribes | observable
@@ -138,30 +138,137 @@ function majorEntities() {
 majorEntities();
 
 // 1. subscribe
-
-const data$ = new Observable(subscriber => {
-  subscriber.next('data1');
-  subscriber.next('data2');
-  subscriber.complete();
-});
+function subscribe() {
+  const data$ = new Observable(subscriber => {
+    // simple producer
+    subscriber.next('data1');
+    subscriber.next('data2');
+    subscriber.complete();
+  });
 
 // 1.1  Observable.subscribe(Observer)
-data$.subscribe({
-  next: value => console.log('Observable.subscribe(Observer) - next', value),
-  complete: () => console.log('Observable.subscribe(Observer) - complete')
-});
+  const subscription = data$.subscribe({              // set up a subscription
+    next: value => console.log('Observable.subscribe(Observer) - next', value),
+    complete: () => console.log('Observable.subscribe(Observer) - complete'),
+  });
 
 // Observable.forEach(Observer)
-data$.forEach(value => {
-  console.log('Observable.forEach(Observer) - next ', value);
-});
+  data$.forEach(value => {
+    console.log('Observable.forEach(Observer) - next ', value);
+  });
 
 // lastValueFrom() function
-lastValueFrom(data$).then(last => {
-  console.log('lastValueFrom() ', last);
-});
+  lastValueFrom(data$).then(last => {
+    console.log('lastValueFrom() ', last);
+  });
 
 // firstValueFrom() function
-firstValueFrom(data$).then(first => {
-  console.log('firstValueFrom() ', first);
+  firstValueFrom(data$).then(first => {
+    console.log('firstValueFrom() ', first);
+  });
+}
+subscribe();
+
+// 2. finalization
+function finalization() {
+// 2.1 complete
+  const observable$ = new Observable(subscriber => {
+    const timer = setInterval(() => {
+      subscriber.next('data');
+    }, 1000);
+
+    // AFTER 3", simulate completion
+    setTimeout(() => {
+      subscriber.complete();        // trigger finalization
+    }, 3000);
+
+    // FINALIZATION - clean up resources -- used by a -- producer
+    return () => {
+      console.log('finalization - complete - clean up resources');
+      clearInterval(timer);
+    };
+  });
+
+  observable$.subscribe({
+    next: val => console.log('finalization - complete - next ', val),
+    complete: () => console.log('finalization - complete - completed'),
+  });
+
+// 2.2 error
+  const errorObservable$ = new Observable(subscriber => {
+    const connection = { active: true };
+
+    setTimeout(() => {
+      subscriber.error(new Error('finalization - error - trigger finalization'));  // trigger finalization
+    }, 2000);
+
+    // FINALIZATION - clean up resources -- used by a -- producer
+    return () => {
+      console.log('finalization - error - clean up resources');
+      connection.active = false;
+    };
+  });
+
+  errorObservable$.subscribe({
+    next: val => console.log('finalization - error - next ', val),
+    error: err => console.log('finalization - error - error ', err.message),
+  });
+
+// 2.3 unsubscription
+  const infiniteObservable$ = new Observable(subscriber => {
+    const interval = setInterval(() => {
+      subscriber.next(Math.random());
+    }, 500);
+
+    // FINALIZATION - clean up resources -- used by a -- producer
+    return () => {
+      console.log('finalization - unsubscription - clean up resources');
+      clearInterval(interval);
+    };
+  });
+
+  const subscription = infiniteObservable$.subscribe(
+    val => console.log('finalization - unsubscription - next ', val),
+  );
+
+// AFTER 2", unsubscribe
+  setTimeout(() => {
+    subscription.unsubscribe();       // trigger finalization
+  }, 2000);
+}
+finalization();
+
+// 3. unsubscription
+function unsubscription() {
+  const observable = interval(1000);
+  const subscriptionToUnsubscribe = observable.subscribe(x => console.log('unsubscription - next ', x));
+  console.log('unsubscription - BEFORE subscriptionToUnsubscribe.closed ', subscriptionToUnsubscribe.closed);      // subscription opened
+  setTimeout(() => {
+    subscriptionToUnsubscribe.unsubscribe();        // unsubscription
+    console.log('unsubscription - AFTER subscriptionToUnsubscribe.closed ', subscriptionToUnsubscribe.closed);    //  subscription closed
+  }, 3000);
+}
+unsubscription();
+
+// 4. observation chain
+const sourceObservable$ = of(1, 2, 3, 4, 5);
+const chainExample$ = new Observable(subscriber => {
+  const sourceSubscription = sourceObservable$.subscribe({
+    next: value => {
+      console.log(`observation chain ${value} - next`);
+      subscriber.next(value * 10); // transform & notify -- to the -- next one
+    },
+    complete: () => {
+      console.log('observation chain - complete');
+      subscriber.complete();
+    }
+  });
+
+  return () => sourceSubscription.unsubscribe();    // unsubscribe is propagated | chain
+});
+
+// FINAL consumer
+chainExample$.subscribe({
+  next: value => console.log('observation chain - next ', value),
+  complete: () => console.log('observation chain - complete')
 });
