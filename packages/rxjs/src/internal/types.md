@@ -8,3 +8,9 @@
     * describe `OperatorFunction`
 
 * TODO:
+
+* `export type ObservableInput<T>`
+  * == ALLOWED types /
+    * 👀can be converted -- to -- observables👀
+
+* TODO:
