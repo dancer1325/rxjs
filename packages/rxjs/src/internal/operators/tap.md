@@ -18,15 +18,15 @@
 
 * `export function tap<T>(observerOrNext?: Partial<TapObserver<T>> | ((value: T) => void) | null): MonoTypeOperatorFunction<T> {`
   * 's goal
-    * ⭐️enable perform side effects⭐️
-      * side-effects == outside state with + NO alter the notification
+    * ⭐️enable perform side effects⭐️/ ⚠️NO alter the notification⚠️
+      * _Example of side-effects:_ modify state, logging, ...
 
   ![](/apps/rxjs.dev/src/assets/images/marble-diagrams/tap.png)
 
   * vs `map` OR `mergeMap`
-    * ALSO enable perform side-effects
+    * ALSO enable perform side-effects, ⚠️BUT these ones can modify the internal state⚠️
     * recommendation
-      * use `tap`
+      * 👀use `tap`👀
         * Reason: 🧠`tap`'s design is to perform side-effects🧠
   * if there's a notification (`next`, `error`, or `complete`) -> `tap` call -- , via reference OR particular observer, the -- appropriate callback
     * AFTERWARD, notification is passed down the stream
