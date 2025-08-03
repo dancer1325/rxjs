@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tap</title>
+</head>
+<body>
+  <script src="https://unpkg.com/rxjs@7/dist/bundles/rxjs.umd.min.js"></script>
+  <script>
+    const { fromEvent, switchMap, interval, take, tap } = rxjs;
+    
+    const source$ = fromEvent(document, 'click');
+    const result$ = source$.pipe(
+      switchMap((_, i) => i % 2 === 0
+        ? fromEvent(document, 'mousemove').pipe(
+            tap({
+              subscribe: () => console.log('Subscribed to mouse move events after click #' + i),
+              unsubscribe: () => console.log('Mouse move events #' + i + ' unsubscribed'),
+              finalize: () => console.log('Mouse move events #' + i + ' finalized')
+            })
+          )
+        : interval(1000).pipe(
+            take(5),
+            tap({
+              subscribe: () => console.log('Subscribed to 1-second interval events after click #' + i),
+              unsubscribe: () => console.log('1-second interval events #' + i + ' unsubscribed'),
+              finalize: () => console.log('1-second interval events #' + i + ' finalized')
+            })
+          )
+      )
+    );
+    
+    const subscription = result$.subscribe({
+      next: console.log
+    });
+    
+    setTimeout(() => {
+      console.log('Unsubscribe after 60 seconds');
+      subscription.unsubscribe();
+    }, 60000);
+  </script>
+</body>
+</html>
