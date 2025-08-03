@@ -1,18 +1,20 @@
 # ResultSelector Parameter
 
-Some operator supported a resultSelector argument that acted as mapping function on the result of that operator.
-The same behavior can be reproduced with the `map` operator, therefore this argument became deprecated.
+* `resultSelector` argument
+  * used by
+    * SOME operator
+  * == mapping function | those operator's result
 
-<div class="alert is-important">
-    <span>
-        This deprecation was introduced in RxJS 6.0 and will become breaking with RxJS 8.
-    </span>
-</div>
-
-There were two reasons for actually deprecating those parameters:
-
-1. It increases the bundle size of every operator
-2. In some scenarios values had to be retained in memory causing a general memory pressure
+* |
+  * RxJS 6.0,
+    * deprecation
+      * Reason:🧠
+        * 💡can be done -- by -- `map` operator💡
+        * increase EVERY operator's bundle size
+        * | SOME scenarios,
+          * retained | memory -> memory pressure🧠
+  * RxJS 8,
+    * breaking change
 
 ## Operators affected by this Change
 
@@ -23,21 +25,3 @@ There were two reasons for actually deprecating those parameters:
 - [mergeMapTo](/api/operators/mergeMapTo)
 - [switchMap](/api/operators/switchMap)
 - [switchMapTo](/api/operators/switchMapTo)
-
-## How to Refactor
-
-Instead of using the `resultSelector` Argument, you can leverage the [`map`](/api/operators/map) operator on the inner Observable:
-
-<!-- prettier-ignore -->
-```ts
-import { fromEvent, switchMap, interval, map } from 'rxjs';
-
-// deprecated
-fromEvent(document, 'click').pipe(
-  switchMap((x) => interval(1000), (_, x) => x + 1)
-);
-// suggested change
-fromEvent(document, 'click').pipe(
-  switchMap((x) => interval(1000).pipe(map((x) => x + 1)))
-);
-```

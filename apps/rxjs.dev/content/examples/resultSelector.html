@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>RxJS Overview</title>
+  <script src="https://unpkg.com/rxjs@7/dist/bundles/rxjs.umd.min.js"></script>
+</head>
+<body>
+<h1>RxJS Overview Example</h1>
+<button id="clickBtn">Click me!</button>
+
+<script>
+  const { fromEvent, switchMap, interval, map } = rxjs;
+  
+  // 1. deprecated
+  fromEvent(document, 'click').pipe(
+    switchMap((x) => interval(1000), (_, x) => x + 1)
+  );
+  // 2. ALTERNATIVE -- via -- `map`
+  fromEvent(document, 'click').pipe(
+    switchMap((x) => interval(1000).pipe(map((x) => x + 1)))
+  );
+</script>
+</body>
+</html>
