@@ -7,5 +7,8 @@
 * if it's "*.ts" -> `tsc fileName.ts`
   * generate "fileName.js"
 * `node fileName.js`
+* _Examples:_ "tap.ts"
+
 ## ".html"
 * opens it | browser
+* _Examples:_ "tap.html"

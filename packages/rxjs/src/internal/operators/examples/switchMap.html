@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SwitchMap</title>
+</head>
+<body>
+  <script src="https://unpkg.com/rxjs@7/dist/bundles/rxjs.umd.min.js"></script>
+  <script>
+    const { fromEvent, switchMap, interval} = rxjs;
+
+    const clicks = fromEvent(document, 'click');
+    const result = clicks.pipe(switchMap(() => interval(1000)));
+    result.subscribe(x => console.log(x));
+  </script>
+</body>
+</html>
