@@ -176,7 +176,15 @@ An "observable input" ([defined as a type here](/api/index/type-alias/Observable
 
 ### Notifier
 
-An [observable](#observable) that is being used to notify another [observable](#observable) that it needs to perform some action. The action should only occur on a [next notification](#next), and never on [error](#error) or [complete](#complete). Generally, notifiers are used with specific operators, such as [`takeUntil`](/api/operators/takeUntil), [`buffer`](/api/operators/buffer), or [`delayWhen`](/api/operators/delayWhen). A notifier may be passed directly, or it may be returned by a callback.
+* [observable](#observable) /
+  * uses
+    * 👀notify ANOTHER [observable](#observable) / it needs to perform SOME [next notification](#next)'s action👀
+      * NEVER | [error](#error) OR [complete](#complete)
+      * \+ specific operators
+        * _Examples:_ [`takeUntil`](/api/operators/takeUntil), [`buffer`](/api/operators/buffer), or [`delayWhen`](/api/operators/delayWhen)
+  * how to use?
+    * passed directly, OR
+    * returned -- by a -- callback
 
 ### Inner Source
 

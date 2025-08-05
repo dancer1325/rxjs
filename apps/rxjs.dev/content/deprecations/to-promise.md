@@ -1,8 +1,12 @@
 # Conversion to Promises
 
-The similarity between Observables and Promises is that both [collections](/guide/observable) may produce values over
-time, but the difference is that Observables may produce none or more than one value, while Promises produce only one
-value when resolved successfully.
+* Observables vs Promises
+  * SAME
+    * [collections](../guide/observable) / may produce values | time
+  * ⚠️DIFFERENCE ⚠️
+    * NUMBER of values / produced
+      * Observables may produce >= 0 values
+      * Promises may produce 1! value | resolve successfully
 
 ## Issues
 
@@ -91,8 +95,15 @@ console.log(result);
 
 ## Warning
 
-Only use `lastValueFrom` function if you _know_ an Observable will eventually complete. The `firstValueFrom` function should
-be used if you _know_ an Observable will emit at least one value _or_ will eventually complete. If the source Observable
-does not complete or emit, you will end up with a Promise that is hung up, and potentially all of the state of an async
-function hanging out in memory. To avoid this situation, look into adding something like {@link timeout}, {@link take},
-{@link takeWhile}, or {@link takeUntil} amongst others.
+* 👀if you know that Observable /
+  * eventually complete -> use `lastValueFrom()` function👀
+  * emit >=1 value OR eventually complete -> use `firstValueFrom()` function
+* if the source Observable does NOT complete OR emit ->
+  * end up with
+    * Promise / hung up
+    * ALL async function's state / hang out in memory
+  * use
+    * `timeout`
+    * `take`
+    * `takeWhile`
+    * `takeUntil`
