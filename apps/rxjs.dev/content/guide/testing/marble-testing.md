@@ -1,42 +1,31 @@
-# Testing RxJS Code with Marble Diagrams
+# Testing RxJS Code -- via -- Marble Diagrams
 
-<div class="alert is-helpful">
-  <span>This guide refers to usage of marble diagrams when using the new <code>testScheduler.run(callback)</code>. Some details here do not apply to using the TestScheduler manually, without using the <code>run()</code> helper.</span>
-</div>
+* goal
+  * how to use marble diagrams -- via --
+    * `testScheduler.run(callback)`
+    * `run()`
 
-We can test our _asynchronous_ RxJS code _synchronously_ and deterministically by virtualizing time using the TestScheduler. **Marble diagrams** provide a visual way for us to represent the behavior of an Observable. We can use them to assert that a particular Observable behaves as expected, as well as to create [hot and cold Observables](https://medium.com/@benlesh/hot-vs-cold-observables-f8094ed53339) we can use as mocks.
+## `TestScheduler`
+* allows
+  * 👀test our async RxJS code -- , via virtualizing time, as -- sync & deterministic👀
 
-> At this time, the TestScheduler can only be used to test code that uses RxJS schedulers - `AsyncScheduler`, etc. If the code consumes a Promise, for example, it cannot be reliably tested with `TestScheduler`, but instead should be tested more traditionally. See the [Known Issues](#known-issues) section for more details.
+* **Marble diagrams**
+  * provide
+    * visual way -- to represent the -- Observable's behavior
+  * uses
+    * assert / particular Observable behaves as expected
+    * create [hot & cold Observables](https://medium.com/@benlesh/hot-vs-cold-observables-f8094ed53339) / used as mocks
 
-```ts
-import { TestScheduler } from 'rxjs/testing';
-import { throttleTime } from 'rxjs';
+* ⚠️test requirements⚠️
+  * code / uses RxJS schedulers - `AsyncScheduler`, etc
 
-const testScheduler = new TestScheduler((actual, expected) => {
-  // asserting the two objects are equal - required
-  // for TestScheduler assertions to work via your test framework
-  // e.g. using chai.
-  expect(actual).deep.equal(expected);
-});
-
-// This test runs synchronously.
-it('generates the stream correctly', () => {
-  testScheduler.run((helpers) => {
-    const { cold, time, expectObservable, expectSubscriptions } = helpers;
-    const e1 = cold(' -a--b--c---|');
-    const e1subs = '  ^----------!';
-    const t = time('   ---|       '); // t = 3
-    const expected = '-a-----c---|';
-
-    expectObservable(e1.pipe(throttleTime(t))).toBe(expected);
-    expectSubscriptions(e1.subscriptions).toBe(e1subs);
-  });
-});
-```
+* ❌use cases / NOT valid to test❌
+  * code / consumes a `Promise`
+  * see [Known Issues](#known-issues)
 
 ## API
 
-The callback function you provide to `testScheduler.run(callback)` is called with `helpers` object that contains functions you'll use to write your tests.
+* TODO: The callback function you provide to `testScheduler.run(callback)` is called with `helpers` object that contains functions you'll use to write your tests.
 
 <div class="alert is-helpful">
   <span>
