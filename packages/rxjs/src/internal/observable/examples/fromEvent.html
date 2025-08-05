@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>RxJS Internal Observables fromEvent</title>
+  <script src="https://unpkg.com/rxjs@7/dist/bundles/rxjs.umd.min.js"></script>
+</head>
+<body>
+<h1>RxJS Internal Observables fromEvent</h1>
+<script>
+  // 1. fromEvent(target, eventName)
+  const clicks = rxjs.fromEvent(document, 'click');
+  clicks.subscribe(x => console.log("fromEvent(target, eventName) - next - ", x));
+
+  // 2. fromEvent(target, eventName, options)
+  const div = document.createElement('div');
+  div.style.cssText = 'width: 200px; height: 200px; background: #09c;';
+  document.body.appendChild(div);
+
+  // options  ==  eventName's arguments   ==    `addEventListener(options)`
+  const clicksInDocument = rxjs.fromEvent(document, 'click', { capture: true });
+  const clicksInDiv = rxjs.fromEvent(div, 'click');
+
+  clicksInDocument.subscribe(x => console.log("fromEvent(target, eventName, options) - next - clicksInDocument ", x));
+  clicksInDiv.subscribe(x => console.log("fromEvent(target, eventName, options) - next - clicksInDiv ", x));
+
+  // 3. `target`  ==
+  // 3.1  Node.js EventEmitter events
+  // TODO:
+
+  // 3.2  JQuery-style event target
+  // TODO:
+
+  // 3.3  DOM `NodeList`
+  // TODO:
+
+  // 3.4  DOM `HtmlCollection`
+  // TODO:
+
+  // 4. duck typing
+  // TODO:
+
+  // 5. TODO:
+
+</script>
+</body>
+</html>

@@ -14,4 +14,3 @@
       * sync emit the `values`
       * | ONCE ALL have been emitted,
         * IMMEDIATELY completes
-  * _Example:_ [here](/apps/rxjs.dev/content/referenceExamples/of.ts)
