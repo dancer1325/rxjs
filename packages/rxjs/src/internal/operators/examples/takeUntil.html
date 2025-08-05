@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>TakeUntil</title>
+</head>
+<body>
+  <script src="https://unpkg.com/rxjs@7/dist/bundles/rxjs.umd.min.js"></script>
+  <script>
+    // 1. tick / EACH second TILL you click
+    const source = rxjs.interval(1000);
+    const clicks = rxjs.fromEvent(document, 'click');
+    const result = source.pipe(rxjs.takeUntil(clicks));
+    result.subscribe(x => console.log(x));
+  </script>
+</body>
+</html>
