@@ -5,6 +5,7 @@
     * special type of Observable
       * allows
         * 👀values are multicasted -- to -- MANY Observers👀
+        * 👀hit [notifications](glossary-and-semantics.md#notification)👀
       * uses
         * `subscribe` | it
           * -- by -- providing an Observer

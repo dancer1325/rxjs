@@ -150,6 +150,6 @@ function multicastOperator() {
   // == under the hood, `source.subscribe(subject)`
   const returnedByConnect = multicasted.connect();        // if you comment it -> NO receive values
   console.log('multicast operator - returnedByConnect - typeof ', typeof returnedByConnect);
-  console.log('multicast operator - returnedByConnect - returnedByConnect.constructor.name ', returnedByConnect.constructor.name);
+  console.log('multicast operator - returnedByConnect - returnedByConnect.constructor.name ', returnedByConnect.constructor.name);      // subscription
 }
 multicastOperator();
