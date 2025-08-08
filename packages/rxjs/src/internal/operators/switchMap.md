@@ -1,4 +1,4 @@
-* EACH source value is projected -- to an -- Observable /
+* ⭐️EACH source value is projected -- to an -- Observable⭐️ /
   * merged | output Observable
     * == 👀flattens ALL inner Observables -- via -- `switchAll`👀
   * emit values
