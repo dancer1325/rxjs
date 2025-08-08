@@ -31,14 +31,14 @@
 
 ### How to migrate?
 
-| `'rxjs/operators'` Operator                             | Replace -- with -- Static Creation Operator | Replace -- with -- ⚠️NEW⚠️ Operator Name |
-| ------------------------------------------------------- |---------------------------------------|--------------------------------------|
-| [`combineLatest`](/api/operators/combineLatest)         | `combineLatest`                       | `combineLatestWith`                  |
-| [`concat`](/api/operators/concat)                       | `concat`                         | `concatWith`                    |
-| [`merge`](/api/operators/merge)                         | `merge`                          | `mergeWith`                     |
-| [`onErrorResumeNext`](/api/operators/onErrorResumeNext) | `onErrorResumeNext`              | `onErrorResumeNextWith`         |
-| [`race`](/api/operators/race)                           | `race`                           | `raceWith`                     |
-| [`zip`](/api/operators/zip)                             | `zip`                            | `zipWith`                       |
+| `'rxjs/operators'` Operator                             | Replace -- with -- 👀NEW Static Creation Operator👀 | Replace -- with -- 👀NEW Operator Name👀 |
+| ------------------------------------------------------- |-----------------------------------------------------|------------------------------------------|
+| [`combineLatest`](/api/operators/combineLatest)         | `combineLatest`                                     | `combineLatestWith`                      |
+| [`concat`](/api/operators/concat)                       | `concat`                                            | `concatWith`                             |
+| [`merge`](/api/operators/merge)                         | `merge`                                             | `mergeWith`                              |
+| [`onErrorResumeNext`](/api/operators/onErrorResumeNext) | `onErrorResumeNext`                                 | `onErrorResumeNextWith`                  |
+| [`race`](/api/operators/race)                           | `race`                                              | `raceWith`                               |
+| [`zip`](/api/operators/zip)                             | `zip`                                               | `zipWith`                                |
 
 * EXCEPTION
   * `partition`
