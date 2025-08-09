@@ -19,10 +19,13 @@ can produce multiple values over time. When converting to a Promise, you might w
 either the first value that has arrived or the last one. To fix all these issues, we decided to deprecate `toPromise()`,
 and to introduce the two new helper functions for conversion to Promises.
 
-## Use one of the two new functions
+## recommendations
 
-As a replacement to the deprecated `toPromise()` method, you should use one of the two built in static conversion
-functions {@link firstValueFrom} or {@link lastValueFrom}.
+* 💡use `firstValueFrom()` OR `lastValueFrom()` -- BETTER than -- `toPromise()`💡
+  * Reason:🧠deprecate `toPromise()`🧠
+
+* `firstValueFrom()` & `lastValueFrom()`
+  * == built-in static conversion functions
 
 ### `lastValueFrom`
 
@@ -51,53 +54,29 @@ execute();
 
 ### `firstValueFrom`
 
-However, you might want to take the first value as it arrives without waiting an Observable to complete, thus you can
-use `firstValueFrom`. The `firstValueFrom` will resolve a Promise with the first value that was emitted from the
-Observable and will immediately unsubscribe to retain resources. The `firstValueFrom` will also reject with an
-{@link EmptyError} if the Observable completes with no values emitted.
+* uses
+  * take the first value / 👀WITHOUT waiting complete the Observable👀
 
-#### Example
+* how does it work?
+  * resolve a Promise /
+    * first value emitted -- from the -- Observable
+    * IMMEDIATELY unsubscribe
+  * if the Observable completes / NO values emitted -> reject -- with an -- `EmptyError` /
+    * 's message == Observable's message
 
-```ts
-import { interval, firstValueFrom } from 'rxjs';
+## use default value
 
-async function execute() {
-  const source$ = interval(2000);
-  const firstNumber = await firstValueFrom(source$);
-  console.log(`The first number is ${firstNumber}`);
-}
+* allows
+  * 👀avoid that promises / created by `lastValueFrom` OR `firstValueFrom`, reject -- with -- `EmptyError`👀
+    * == used | source Observable completes WITHOUT emitting values
 
-execute();
-
-// Expected output:
-// "The first number is 0"
-```
-
-<span class="informal">Both functions will return a Promise that rejects if the source Observable errors. The Promise
-will reject with the same error that the Observable has errored with.</span>
-
-## Use default value
-
-If you don't want Promises created by `lastValueFrom` or `firstValueFrom` to reject with {@link EmptyError} if there
-were no emissions before completion, you can use the second parameter. The second parameter is expected to be an object
-with `defaultValue` parameter. The value in the `defaultValue` will be used to resolve a Promise when source Observable
-completes without emitted values.
-
-```ts
-import { firstValueFrom, EMPTY } from 'rxjs';
-
-const result = await firstValueFrom(EMPTY, { defaultValue: 0 });
-console.log(result);
-
-// Expected output:
-// 0
-```
+* `firstValueFrom(sourceObservable, {defaultValue: someValue})` & `lastValueFrom(sourceObservable, {defaultValue: someValue})`
 
 ## Warning
 
 * 👀if you know that Observable /
-  * eventually complete -> use `lastValueFrom()` function👀
-  * emit >=1 value OR eventually complete -> use `firstValueFrom()` function
+  * eventually complete -> use `lastValueFrom()` function
+  * emit >=1 value OR eventually complete -> use `firstValueFrom()` function👀
 * if the source Observable does NOT complete OR emit ->
   * end up with
     * Promise / hung up

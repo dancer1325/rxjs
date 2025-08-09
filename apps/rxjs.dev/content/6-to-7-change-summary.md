@@ -1,6 +1,8 @@
-# RxJS 6.x to 7.x Detailed Change List
+# RxJS 6.x -- to -- 7.x Detailed Change List
 
-This document contains a detailed list of changes between RxJS 6.x and RxJS 7.x, presented in the order they can be found when diffing the TypeScript APIs in various module files.
+* goal
+  * changes RxJS 6.x vs RxJS 7.x /
+    * displayed -- via -- `git diff`
 
 ## module `rxjs`
 
@@ -172,7 +174,14 @@ This document contains a detailed list of changes between RxJS 6.x and RxJS 7.x,
 
 #### firstValueFrom
 
-- A better, more tree-shakable replacement for `toPromise()` (which is now deprecated). This function allows the user to convert any `Observable` into a `Promise` that will resolve when the source observable emits its first value. If the source observable closes without emitting a value, the returned promise will reject with an `EmptyError`, or it will resolve with a configured `defaultValue`. For more information, see the [deprecation guide](/deprecations/to-promise).
+- replacement -- for -- `toPromise()`
+- allows
+  - 💡convert any `Observable` -- into a -- `Promise` 💡/
+    - resolve it | source observable emits its first value
+    - if the source observable closes WITHOUT emitting a value -> returned promise will
+      - reject -- with an -- `EmptyError` OR
+      - resolve -- with a -- configured `defaultValue`
+- see [deprecation guide](deprecations/to-promise)
 
 #### lastValueFrom
 
