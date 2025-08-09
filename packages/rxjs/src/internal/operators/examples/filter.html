@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Filter</title>
+</head>
+<body>
+  <script src="https://unpkg.com/rxjs@7/dist/bundles/rxjs.umd.min.js"></script>
+  <script>
+    const { fromEvent, filter} = rxjs;
+
+    // 1. filter(predicate)
+    const div = document.createElement('div');
+    div.style.cssText = 'width: 200px; height: 200px; background: #09c;';
+    document.body.appendChild(div);
+
+    const clicksFilterToPredicate = fromEvent(document, 'click');
+    const resultFilterPredicated = clicksFilterToPredicate.pipe(filter(ev => (ev.target).tagName === 'DIV'));
+    resultFilterPredicated.subscribe(x => console.log("filter(predicate) - next - ", x));
+  </script>
+</body>
+</html>
