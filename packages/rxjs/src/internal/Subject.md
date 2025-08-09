@@ -12,3 +12,9 @@
     * ⚠️if it's unsubscribed -> throws an error⚠️
   * TODO:
   * `unsubscribe() {}`
+  * TODO:
+  * `asObservable(): Observable<T> {}`
+    * 👀creates a NEW Observable / this Subject == source Observable👀
+    * uses
+      * create Subject's custom Observer-side logic
+      * 💡hide Subject's functionality & expose ONLY Observable's functionality💡
