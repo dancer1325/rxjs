@@ -1,23 +1,23 @@
 # Conversion to Promises
 
 * Observables vs Promises
-  * SAME
+  * SIMILITUDE
     * [collections](../guide/observable) / may produce values | time
   * ⚠️DIFFERENCE ⚠️
     * NUMBER of values / produced
       * Observables may produce >= 0 values
       * Promises may produce 1! value | resolve successfully
 
-## Issues
+## Problem
 
-For this reason, in RxJS 7, the return type of the Observable's [`toPromise()`](/api/index/class/Observable#toPromise)
-method has been fixed to better reflect the fact that Observables can yield zero values. This may be a **breaking
-change** to some projects as the return type was changed from `Promise<T>` to `Promise<T | undefined>`.
-
-Also, `toPromise()` method name was never indicating what emitted value a Promise will resolve with because Observables
-can produce multiple values over time. When converting to a Promise, you might want to choose which value to pick -
-either the first value that has arrived or the last one. To fix all these issues, we decided to deprecate `toPromise()`,
-and to introduce the two new helper functions for conversion to Promises.
+* [Observable's `toPromise()`](/api/index/class/Observable#toPromise)
+  * | RxJS 7,
+    * 's return type `Promise<T>` -- to -> `Promise<T | undefined>`
+      * ⚠️deprecated⚠️
+        * Reason: 🧠Observables can yield 0 values / NO indicated the emmited value🧠
+      * ⚠️breaking change⚠️
+  * | RxJS 8,
+    * ⚠️removed⚠️
 
 ## recommendations
 
@@ -29,7 +29,7 @@ and to introduce the two new helper functions for conversion to Promises.
 
 ### `lastValueFrom`
 
-The `lastValueFrom` is almost exactly the same as `toPromise()` meaning that it will resolve with the last value that has
+* TODO: The `lastValueFrom` is almost exactly the same as `toPromise()` meaning that it will resolve with the last value that has
 arrived when the Observable completes, but with the difference in behavior when Observable completes without emitting a
 single value. When Observable completes without emitting, `toPromise()` will successfully resolve with `undefined` (thus
 the return type change), while the `lastValueFrom` will reject with the {@link EmptyError}. Thus, the return type of the
