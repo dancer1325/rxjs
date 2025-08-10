@@ -1,55 +1,37 @@
 # Scheduler
 
-**What is a Scheduler?** A scheduler controls when a subscription starts and when notifications are delivered. It consists of three components.
+* scheduler
+  * == 👀data structure + execution context + (virtual) clock 👀
+    * data structure
+      * uses
+        * how to ,-- based on -- priority or other criteria,
+          * store tasks
+          * queue tasks
+    * execution context
+      * uses
+        * specify where & when executing the task
+          * _Example:_
+            * immediately,
+            * another callback mechanism -- `setTimeout` or `process.nextTick`
+    * (virtual) clock
+      * provides
+        * `.now()`
+          * == 👀notion of "time"👀
+          * uses
+            * if tasks are scheduled | particular scheduler -> ⚠️adhere ONLY | this clock's time⚠️
+          * use cases
+            * testing
+  * 👀controls when 👀
+    * start the subscription
+    * to delivery the notifications
 
-- **A Scheduler is a data structure.** It knows how to store and queue tasks based on priority or other criteria.
-- **A Scheduler is an execution context.** It denotes where and when the task is executed (e.g. immediately, or in another callback mechanism such as setTimeout or process.nextTick, or the animation frame).
-- **A Scheduler has a (virtual) clock.** It provides a notion of "time" by a getter method `now()` on the scheduler. Tasks being scheduled on a particular scheduler will adhere only to the time denoted by that clock.
+* TODO:
+In the example below, we take the usual simple Observable that emits values `1`, `2`, `3` synchronously,
+and use the operator `observeOn` to specify the `asyncScheduler` scheduler to use for delivering those values.
 
-<span class="informal">A Scheduler lets you define in what execution context will an Observable deliver notifications to its Observer.</span>
-
-In the example below, we take the usual simple Observable that emits values `1`, `2`, `3` synchronously, and use the operator `observeOn` to specify the `asyncScheduler` scheduler to use for delivering those values.
-
-<!-- prettier-ignore -->
-```ts
-import { Observable, observeOn, asyncScheduler } from 'rxjs';
-
-const observable = new Observable((observer) => {
-  observer.next(1);
-  observer.next(2);
-  observer.next(3);
-  observer.complete();
-}).pipe(
-  observeOn(asyncScheduler)
-);
-
-console.log('just before subscribe');
-observable.subscribe({
-  next(x) {
-    console.log('got value ' + x);
-  },
-  error(err) {
-    console.error('something wrong occurred: ' + err);
-  },
-  complete() {
-    console.log('done');
-  },
-});
-console.log('just after subscribe');
-```
-
-Which executes with the output:
-
-```none
-just before subscribe
-just after subscribe
-got value 1
-got value 2
-got value 3
-done
-```
-
-Notice how the notifications `got value...` were delivered after `just after subscribe`, which is different to the default behavior we have seen so far. This is because `observeOn(asyncScheduler)` introduces a proxy Observer between `new Observable` and the final Observer. Let's rename some identifiers to make that distinction obvious in the example code:
+Notice how the notifications `got value...` were delivered after `just after subscribe`, which is different to the default behavior we have seen so far
+This is because `observeOn(asyncScheduler)` introduces a proxy Observer between `new Observable` and the final Observer
+Let's rename some identifiers to make that distinction obvious in the example code:
 
 <!-- prettier-ignore -->
 ```ts
