@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>observeOn</title>
+</head>
+<body>
+  <script src="https://unpkg.com/rxjs@7/dist/bundles/rxjs.umd.min.js"></script>
+  <script>
+    const { interval, observeOn, animationFrameScheduler } = rxjs;
+
+    const someDiv = document.createElement('div');
+    someDiv.style.cssText = 'width: 200px;background: #09c';
+    document.body.appendChild(someDiv);
+    const intervals = interval(10);                               // intervals are scheduled     ==    emit events / EACH 10 ms
+
+    intervals.pipe(
+      observeOn(animationFrameScheduler)
+    )
+    .subscribe(val => {
+      console.log('observeOn - next ', val);
+      someDiv.style.height = val + 'px';
+    });
+  </script>
+</body>
+</html>
