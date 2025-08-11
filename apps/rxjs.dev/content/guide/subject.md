@@ -161,37 +161,15 @@ The `refCount()` method only exists on ConnectableObservable, and it returns an 
 
 ## BehaviorSubject
 
-One of the variants of Subjects is the `BehaviorSubject`, which has a notion of "the current value". It stores the latest value emitted to its consumers, and whenever a new Observer subscribes, it will immediately receive the "current value" from the `BehaviorSubject`.
+* == Subjects' variant /
+  * ⚠️ONLY stores the latest value -- emitted to -- its consumers⚠️
+  * 💡if new Observer subscribes -> IMMEDIATELY receive the `BehaviorSubject`'s CURRENT value💡
 
-<span class="informal">BehaviorSubjects are useful for representing "values over time". For instance, an event stream of birthdays is a Subject, but the stream of a person's age would be a BehaviorSubject.</span>
-
-In the following example, the BehaviorSubject is initialized with the value `0` which the first Observer receives when it subscribes. The second Observer receives the value `2` even though it subscribed after the value `2` was sent.
-
-```ts
-import { BehaviorSubject } from 'rxjs';
-const subject = new BehaviorSubject(0); // 0 is the initial value
-
-subject.subscribe({
-  next: (v) => console.log(`observerA: ${v}`),
-});
-
-subject.next(1);
-subject.next(2);
-
-subject.subscribe({
-  next: (v) => console.log(`observerB: ${v}`),
-});
-
-subject.next(3);
-
-// Logs
-// observerA: 0
-// observerA: 1
-// observerA: 2
-// observerB: 2
-// observerA: 3
-// observerB: 3
-```
+* use cases
+  * represent values | time
+    * _Example:_
+      * event stream of birthdays == Subject
+      * stream of a person's age == BehaviorSubject
 
 ## ReplaySubject
 
@@ -232,7 +210,8 @@ subject.next(5);
 // observerB: 5
 ```
 
-You can also specify a _window time_ in milliseconds, besides of the buffer size, to determine how old the recorded values can be. In the following example we use a large buffer size of `100`, but a window time parameter of just `500` milliseconds.
+You can also specify a _window time_ in milliseconds, besides of the buffer size, to determine how old the recorded values can be
+* In the following example we use a large buffer size of `100`, but a window time parameter of just `500` milliseconds.
 
 <!-- skip-example -->
 
@@ -311,7 +290,8 @@ setTimeout(() => subject.next('dummy'), 1000);
 
 Passing a dummy value this way is clumsy and can confuse users.
 
-By declaring a _void subject_, you signal that the value is irrelevant. Only the event itself matters.
+By declaring a _void subject_, you signal that the value is irrelevant
+* Only the event itself matters.
 
 ```ts
 const subject = new Subject<void>();
@@ -332,4 +312,6 @@ subject.subscribe({
 setTimeout(() => subject.next(), 1000);
 ```
 
-<span class="informal">Before version 7, the default type of Subject values was `any`. `Subject<any>` disables type checking of the emitted values, whereas `Subject<void>` prevents accidental access to the emitted value. If you want the old behavior, then replace `Subject` with `Subject<any>`.</span>
+<span class="informal">Before version 7, the default type of Subject values was `any`
+* `Subject<any>` disables type checking of the emitted values, whereas `Subject<void>` prevents accidental access to the emitted value
+* If you want the old behavior, then replace `Subject` with `Subject<any>`.</span>
