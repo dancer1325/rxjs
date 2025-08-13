@@ -25,6 +25,15 @@
 
 * TODO:
 
+* `export interface TimestampProvider {}`
+  * `now(): number;`
+    * number == timestamp
+    * uses
+      * `ReplaySubject`
+      * `timestamp`
+
+* TODO:
+
 * `export type ObservableInput<T>`
   * == ALLOWED types /
     * 👀can be converted -- to -- observables👀
